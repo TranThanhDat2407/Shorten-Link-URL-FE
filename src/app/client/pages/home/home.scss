@@ -1,0 +1,10 @@
+SCSS.max-w-2xl {
+  max-width: 42rem;
+}
+
+.card {
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
