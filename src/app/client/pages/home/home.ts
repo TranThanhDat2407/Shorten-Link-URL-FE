@@ -1,14 +1,15 @@
 import {ChangeDetectorRef, Component} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {NgIf} from '@angular/common';
+import {AsyncPipe, NgIf} from '@angular/common';
 import {CreateShortLinkResponse} from '../../../common/models/link.model';
 import {LinkService} from '../../../core/services/link';
+import {AuthService} from '../../../core/services/auth';
 
 @Component({
   selector: 'app-home',
   imports: [
     FormsModule,
-    NgIf,
+    NgIf
   ],
   templateUrl: './home.html',
   styleUrl: './home.scss',
@@ -20,6 +21,7 @@ export class HomeComponent {
   error = '';
 
   constructor(private linkService: LinkService,
+              public authService: AuthService,
               private cdr: ChangeDetectorRef) {}
 
   shorten() {

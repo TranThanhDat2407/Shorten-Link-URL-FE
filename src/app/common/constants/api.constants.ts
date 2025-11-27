@@ -1,19 +1,22 @@
 import {environment} from '../../environments/environment';
 
+const API_VERSION = '/api/v1';
+
 export const API_URLS = {
   // ============== SHORT LINK ==============
   SHORT_LINK: {
-    CREATE: `${environment.apiUrl}/short-link/create`,
-    MY_LINKS: `${environment.apiUrl}/short-link/my-links`,
-    REDIRECT: (code: string) => `${environment.apiUrl}/short-link/${code}`,
+    CREATE: `${environment.apiUrl}${API_VERSION}/short-link/create`,
+    MY_LINKS: `${environment.apiUrl}${API_VERSION}/short-link/my-links`,
+    REDIRECT: (code: string) => `${environment.apiUrl}${API_VERSION}/short-link/${code}`,
   },
 
   // ============== AUTH ==============
   AUTH: {
-    LOGIN: `${environment.apiUrl}/auth/login`,
-    REGISTER: `${environment.apiUrl}/auth/register`,
-    LOGOUT: `${environment.apiUrl}/auth/logout`,
-    REFRESH_TOKEN: `${environment.apiUrl}/auth/refresh`,
+    LOGIN: `${environment.apiUrl}${API_VERSION}/auth/login`,
+    REGISTER: `${environment.apiUrl}${API_VERSION}/auth/register`,
+    LOGOUT: `${environment.apiUrl}${API_VERSION}/auth/logout`,
+    REFRESH_TOKEN: `${environment.apiUrl}${API_VERSION}/auth/refresh`,
+    GOOGLE_LOGIN: `${environment.apiUrl}/oauth2/authorization/google`,
   },
 
   // ============== USER ==============
@@ -22,6 +25,6 @@ export const API_URLS = {
 
   // ============== ADMIN ==============
   ADMIN: {
-    DASHBOARD: `${environment.apiUrl}/admin/dashboard`,
+    DASHBOARD: `${environment.apiUrl}${API_VERSION}/admin/dashboard`,
   }
 } as const;

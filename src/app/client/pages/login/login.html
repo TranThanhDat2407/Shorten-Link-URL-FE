@@ -1,0 +1,108 @@
+<div class="bg-light py-3 py-md-3">
+  <div class="container">
+    <div class="row justify-content-md-center">
+      <div class="col-12 col-md-11 col-lg-8 col-xl-7 col-xxl-6">
+        <div class="bg-white p-4 p-md-5 rounded shadow-sm">
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-5">
+                <h2 class="text-uppercase">Log in</h2>
+              </div>
+            </div>
+          </div>
+
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="row gy-3 gy-md-4 overflow-hidden">
+              <div class="col-12">
+                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                <input type="email"
+                       class="form-control" name="email" id="email"
+                       formControlName="email"
+                       [ngClass]="{'is-invalid': email?.invalid
+                       && (email?.touched || submitted),
+                       'is-valid': email?.valid && (email?.touched || submitted)}"
+                       placeholder="name@example.com" required>
+
+                <!-- validation email -->
+                <div class="invalid-feedback">
+                  <div *ngIf="email?.errors?.['required']">Please enter the email.</div>
+                  <div *ngIf="email?.errors?.['pattern']">Invalid email format.</div>
+                </div>
+
+              </div>
+
+
+              <div class="col-12">
+                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                <input type="password" class="form-control"
+                       name="password" id="password" value=""
+                       [ngClass]="{'is-invalid': password?.invalid &&
+                       (password?.touched || submitted),
+                       'is-valid': password?.valid && (password?.touched || submitted)}"
+                       formControlName="password"
+                       required>
+
+                <div class="invalid-feedback">
+                  <div *ngIf="password?.errors?.['required']">Please enter the password.</div>
+                </div>
+              </div>
+
+
+              <div class="col-12">
+                <div class="d-grid">
+                  <button class="btn btn-lg btn-primary"
+                          [disabled]="isLoading || loginForm.invalid"
+                          type="submit">Log in</button>
+                </div>
+
+              </div>
+            </div>
+            <div class="text-danger mt-1">
+              {{ errorMessage }}
+            </div>
+          </form>
+
+
+
+
+          <div class="row">
+            <div class="col-12">
+              <p class="mt-4 mb-4 text-center">Or sign in with</p>
+              <div class=" flex-column flex-md-row">
+<!--                <a href="#!" class="btn bsb-btn-xl btn-outline-primary">-->
+<!--                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">-->
+<!--                    <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z" />-->
+<!--                  </svg>-->
+<!--                  <span class="ms-2 fs-6">Google</span>-->
+<!--                </a>-->
+
+                <div class="d-grid">
+                  <button class="btn btn-lg btn-outline-danger"
+                          [class.shadow-lg]="isGoogleAccount"
+                          [class.highlight-google-bs]="isGoogleAccount"
+                          (click)="loginWithGoogle()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-google me-2" viewBox="0 0 16 16">
+                      <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.198 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.442-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.868 2.404 3.309 4.492 3.309 1.034 0 1.942-.295 2.756-.817h.002l2.493 2.492h-.001A8.257 8.257 0 0 0 15.545 6.558z"/>
+                    </svg>
+                    Log in with Google
+                  </button>
+                </div>
+
+                <div class="row">
+                  <div class="col-12">
+                    <hr class="mt-5 mb-4 border-secondary-subtle">
+                    <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
+                      <a href="#!" class="link-secondary text-decoration-none">Create new account</a>
+                      <a href="#!" class="link-secondary text-decoration-none">Forgot password</a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

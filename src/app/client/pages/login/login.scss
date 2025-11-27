@@ -1,0 +1,7 @@
+.highlight-google-bs {
+  /* Đảm bảo có hiệu ứng chuyển đổi mượt mà */
+  transition: all 0.3s ease-in-out;
+  /* Áp dụng đổ bóng sáng màu Primary (ví dụ về glow effect không có sẵn trong Bootstrap) */
+  box-shadow: 0 0 15px rgba(13, 110, 253, 0.5) !important;
+  transform: scale(1.02); /* Làm nút to lên một chút */
+}

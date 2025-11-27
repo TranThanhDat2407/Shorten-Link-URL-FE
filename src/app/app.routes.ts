@@ -10,12 +10,27 @@ export const routes: Routes = [
     children: [
       { path: '', loadComponent: () => import('./client/pages/home/home')
           .then(c => c.HomeComponent) },
+
+      { path: 'not-found', loadComponent: () => import('./client/pages/not-found/not-found')
+          .then(c => c.NotFoundComponent) },
+
+      { path: 'login', loadComponent: () => import('./client/pages/login/login')
+      .then(c => c.LoginComponent) },
+
+      {
+        path: 'google-success',
+        loadComponent: () => import('./client/pages/google-success/google-success')
+          .then(c => c.GoogleSuccessComponent)
+      },
+
+      { path: 'register', loadComponent: () => import('./client/pages/register/register')
+          .then(c => c.RegisterComponent) },
+
       {
         path: ':code',
         loadComponent: () => import('./client/pages/redirect/redirect')
           .then(c => c.RedirectComponent)
       },
-      // { path: 'login', loadComponent: () => import('./client/pages/login/login.component').then(c => c.LoginComponent) },
       // các trang client khác thêm ở đây
     ]
   },
@@ -26,7 +41,8 @@ export const routes: Routes = [
   //   path: 'admin',
   //   loadComponent: () => import('./admin/layout/admin-layout/admin-layout.component')
   //     .then(c => c.AdminLayoutComponent),
-  //   canActivate: [AdminGuard],
+  //   canActivate: [AuthGuard, RoleGuard],
+  //   data: { roles: ['ADMIN', 'ROLE_ADMIN'] }
   //   children: [
   //     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   //     { path: 'dashboard', loadComponent: () => import('./admin/pages/dashboard/dashboard.component').then(c => c.DashboardComponent) },
@@ -34,5 +50,5 @@ export const routes: Routes = [
   //   ]
   // },
 
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '/not-found' }
 ];

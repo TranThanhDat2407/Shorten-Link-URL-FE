@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {LinkService} from '../../../core/services/link';
 
 import {isPlatformBrowser} from '@angular/common';
-import {environment} from '../../../environments/environment';
+import {API_URLS} from '../../../common/constants/api.constants';
 
 
 
@@ -32,7 +32,8 @@ export class RedirectComponent implements OnInit{
 
     // Backend đã trả 302 → trình duyệt tự redirect
     // Chỉ cần gọi thẳng endpoint redirect!
-    window.location.href = `${environment.apiUrl}/short-link/${code}`;
+    // window.location.href = `${environment.apiUrl}/short-link/${code}`;
+    window.location.href = API_URLS.SHORT_LINK.REDIRECT(code);
   }
 
 }

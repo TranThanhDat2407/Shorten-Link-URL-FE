@@ -2,7 +2,7 @@
 
 <nav class="navbar navbar-expand-lg py-3 navbar-light">
   <div class="container">
-    <a class="navbar-brand" >
+    <a class="navbar-brand" routerLink="/">
       <img src="https://getbootstrap.com/docs/5.2/assets/brand/bootstrap-logo.svg" width="48" height="48" class="align-middle me-1 img-fluid" alt="My Website">
       ShortenIt</a>
 
@@ -20,9 +20,51 @@
 <!--            <a href="https://library.livecanvas.com/sections/" class="nav-link ">BS5 Snippets</a></li>-->
 <!--        </ul> &lt;!&ndash; /lc_nav_menu &ndash;&gt;-->
       </div>
-      <div class="lc-block ms-auto d-grid gap-2 d-lg-block"><a class="btn link-secondary" href="#" role="button">Sign in</a>
-        <a class="btn btn-primary" href="#" role="button">Sign up</a>
-      </div>
+
+
+      @if (currentUser$ | async; as user) {
+        <div class="dropdown">
+          <button class="btn btn-light dropdown-toggle d-flex align-items-center gap-3 py-2 px-3 shadow-sm rounded-pill"
+                  type="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+            <!-- Avatar -->
+            <img [src]="user.pictureUrl || 'https://via.placeholder.com/40'"
+                 alt="{{ user.fullName }}"
+                 class="rounded-circle border border-2 border-primary"
+                 width="38" height="38"
+                 referrerpolicy="no-referrer">
+
+            <!-- Tên + role -->
+            <div class="text-start">
+              <div class="fw-bold small lh-1">{{ user.fullName }}</div>
+            </div>
+          </button>
+
+          <!-- Dropdown menu -->
+          <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 w-100">
+
+
+<!--            <li><hr class="dropdown-divider"></li>-->
+
+            <li>
+              <button class="dropdown-item text-danger d-flex align-items-center gap-2"
+                      (click)="logout()">
+                <i class="bi bi-box-arrow-right"></i> Logout
+              </button>
+            </li>
+
+
+          </ul>
+        </div>
+      } @else {
+        <!-- Chưa đăng nhập -->
+        <div class="lc-block ms-auto d-grid gap-2 d-lg-block"  >
+          <a class="btn link-secondary" href="#" role="button" routerLink="/login">Login</a>
+          <a class="btn btn-primary" href="#" role="button" routerLink="/register">Register</a>
+        </div>
+      }
+
+
     </div>
   </div>
 </nav>
