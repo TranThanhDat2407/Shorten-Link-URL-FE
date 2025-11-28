@@ -1,1 +1,107 @@
-<p>register works!</p>
+<div class="bg-light py-3 py-md-3">
+  <div class="container">
+    <div class="row justify-content-md-center">
+      <div class="col-12 col-md-11 col-lg-8 col-xl-7 col-xxl-6">
+        <div class="bg-white p-4 p-md-5 rounded shadow-sm">
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-5">
+                <h2 class="text-uppercase">Register</h2>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="showSuccessModal" class="success-modal-overlay">
+            <div class="alert alert-success success-modal-content" role="alert">
+              <h4 class="alert-heading">✅ Registration Successful!</h4>
+              <p>Your account has been created successfully.
+                The system will automatically redirect you to the Login page in 5 seconds...</p>
+            </div>
+          </div>
+
+
+
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="row gy-3 gy-md-4 overflow-hidden">
+
+              <div class="col-12">
+                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                <input type="email"
+                       class="form-control" name="email" id="email"
+                       formControlName="email"
+                       [ngClass]="{'is-invalid': email?.invalid && (email?.touched || submitted)}"
+                       placeholder="name@example.com" required>
+
+                <div class="invalid-feedback">
+                  <div *ngIf="email?.errors?.['required']">Please enter the email.</div>
+                  <div *ngIf="email?.errors?.['pattern']">Invalid email format.</div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                <input type="password" class="form-control"
+                       name="password" id="password"
+                       formControlName="password"
+                       [ngClass]="{'is-invalid': password?.invalid && (password?.touched || submitted)}"
+                       required>
+
+                <div class="invalid-feedback">
+                  <div *ngIf="password?.errors?.['required']">Please enter the password.</div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="retypePassword" class="form-label"> Re-type Password <span class="text-danger">*</span></label>
+                <input type="password" class="form-control"
+                       name="retypePassword" id="retypePassword"
+                       formControlName="retypePassword"
+                       [ngClass]="{'is-invalid': retypePassword?.invalid &&
+                       (retypePassword?.touched || submitted)}"
+                       required>
+
+                <div class="invalid-feedback">
+                  <div *ngIf="retypePassword?.errors?.['required']">Please retype the password.</div>
+                  <div  *ngIf="errorRetypeMessage">{{ errorRetypeMessage }}</div>
+                </div>
+              </div>
+
+              <div class="text-danger small" *ngIf="errorMessage">
+                {{ errorMessage }}
+              </div>
+
+              <div class="col-12">
+                <div class="d-grid">
+                  <button class="btn btn-lg btn-primary"
+                          [disabled]="isLoading || registerForm.invalid"
+                          type="submit">
+                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"
+                          role="status" aria-hidden="true"></span>
+                    {{ isLoading ? 'Processing...' : 'Register' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+
+          </form>
+
+          <div class="row">
+            <div class="col-12">
+
+              <div class="row">
+                <div class="col-12">
+                  <hr class="mt-5 mb-4 border-secondary-subtle">
+                  <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
+                    <a routerLink="/login" class="link-secondary text-decoration-none">Already have an account? Log in</a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

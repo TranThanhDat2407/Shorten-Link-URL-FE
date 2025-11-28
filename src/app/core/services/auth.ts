@@ -6,6 +6,8 @@ import {BehaviorSubject, map, Observable, tap} from 'rxjs';
 import { Router } from '@angular/router';
 import {API_URLS} from '../../common/constants/api.constants';
 import { isPlatformBrowser } from '@angular/common';
+import {RegisterResponse} from '../../common/models/response/register-response';
+import {RegisterRequest} from '../../common/models/request/register-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -93,6 +95,10 @@ export class AuthService {
 
   loginWithGoogle() {
     window.location.href = API_URLS.AUTH.GOOGLE_LOGIN;
+  }
+
+  register(data: RegisterRequest) {
+    return this.http.post<RegisterResponse>(API_URLS.AUTH.REGISTER, data);
   }
 
 }
