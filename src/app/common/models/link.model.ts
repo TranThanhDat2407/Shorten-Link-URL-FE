@@ -1,9 +1,8 @@
-// Request gửi đi
 export interface CreateShortLinkRequest {
   originalUrl: string;
+  generateQrCode: boolean;
 }
 
-// Response nhận về
 export interface CreateShortLinkResponse {
   code: string;
   shortUrl: string;

@@ -11,7 +11,7 @@
 
     <div class="lc-block mb-5">
       <div>
-        <p class="lead">Turn complex URLs into short, beautiful links.<br>Share everything easier, instantly.</p>
+        <p class="lead">Turn complex URLs into short, <strong>beautiful links</strong> and <strong>QR Code</strong>.<br>Share everything easier, instantly.</p>
       </div>
     </div>
 
@@ -28,23 +28,46 @@
           required
           #longUrlInput="ngModel"
           [class.is-invalid]="longUrlInput.invalid && longUrlInput.touched"
+          [pattern]="URL_REGEX"
         >
         <button
           class="btn btn-primary"
           type="submit"
-          [disabled]="!longUrl || isCreating"
-        >
+          [disabled]="longUrlInput.invalid || isCreating" >
           <span *ngIf="!isCreating">SHORTEN</span>
           <span *ngIf="isCreating">
-            <span class="spinner-border spinner-border-sm me-2"></span>
-            Creating...
-          </span>
+        <span class="spinner-border spinner-border-sm me-2"></span>
+        Creating...
+      </span>
         </button>
       </form>
+
+      <!-- Checkbox tạo QR -->
+      <div class="text-start mt-3">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="generateQrCode"
+            [(ngModel)]="generateQrCode"
+            name="generateQrCode"
+            [ngModelOptions]="{standalone: true}"
+          >
+          <label class="form-check-label text-muted" for="generateQrCode">
+            Generate QR Code
+          </label>
+        </div>
+      </div>
+
       <div class="text-start mt-2">
-<!--        <small class="text-danger" *ngIf="longUrlInput.invalid && longUrlInput.touched">-->
-<!--          Vui lòng nhập link hợp lệ (bắt đầu bằng http:// hoặc https://)-->
-<!--        </small>-->
+        <small class="text-danger" *ngIf="longUrlInput.invalid && longUrlInput.touched">
+      <span *ngIf="longUrlInput.errors?.['required']">
+        The URL field is required.
+      </span>
+          <span *ngIf="longUrlInput.errors?.['pattern']">
+        Please enter a valid URL format (e.g., google.com or https://google.com).
+      </span>
+        </small>
       </div>
     </div>
 
@@ -81,7 +104,7 @@
         </div>
 
         <!-- QR Code -->
-        <div class="text-center mt-4 pt-3 border-top">
+        <div class="text-center mt-4 pt-3 border-top" *ngIf="result.qrCodeUrl">
           <p class="mb-3 text-muted fw-bold">Scan this QR Code to access your link instantly</p>
 
           <div class="d-inline-block p-3 border rounded bg-white shadow-lg">

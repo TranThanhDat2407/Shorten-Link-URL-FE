@@ -1,7 +1,29 @@
+<!--<app-header></app-header>-->
+
+<!--<main class="min-h-screen">-->
+<!--  <router-outlet></router-outlet>-->
+<!--</main>-->
+
+<!--<app-footer></app-footer>-->
+
+
+<!-- src/app/layout/app-layout.component.html -->
+<!-- app-layout.component.html -->
 <app-header></app-header>
 
-<main class="min-h-screen">
-  <router-outlet></router-outlet>
-</main>
+<div class="d-flex">
+  <!-- Sidebar -->
+  <app-sidebar *ngIf="isLoggedIn$ | async"></app-sidebar>
 
+  <!-- Main content -->
+  <div class="flex-grow-1"
+       [class.has-sidebar]="isLoggedIn$ | async"
+       [class.no-sidebar]="!(isLoggedIn$ | async)">
+
+    <main class="min-vh-100 bg-light">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+</div>
 <app-footer></app-footer>

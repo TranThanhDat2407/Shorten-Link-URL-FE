@@ -3,7 +3,6 @@ import {FormsModule} from '@angular/forms';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {CreateShortLinkResponse} from '../../../common/models/link.model';
 import {LinkService} from '../../../core/services/link';
-import {AuthService} from '../../../core/services/auth';
 
 @Component({
   selector: 'app-home',
@@ -18,34 +17,50 @@ export class HomeComponent {
   longUrl = '';
   result: CreateShortLinkResponse | null = null;
   isCreating = false;
+  generateQrCode = false;
   error = '';
 
+  // ⭐ Khai báo Regex để kiểm tra cú pháp (Frontend Validation)
+  // Regex này chấp nhận URL có hoặc không có giao thức (http/https),
+  // Ví dụ: google.com, www.google.com, http://google.com
+  URL_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:(?:\w|-)+\.)+\w{2,}(?:\/[\w- ./?%&=]*)?$/i;
+
+
   constructor(private linkService: LinkService,
-              public authService: AuthService,
               private cdr: ChangeDetectorRef) {}
+
+  // ⭐ Hàm chuẩn hóa URL (Tương tự như trong Java, để đảm bảo gửi lên API)
+  private standardizeUrl(url: string): string {
+    url = url.trim();
+    // Nếu không bắt đầu bằng http:// hoặc https:// (không phân biệt chữ hoa/thường)
+    if (!url.toLowerCase().match(/^https?:\/\//i)) {
+      return 'http://' + url;
+    }
+    return url;
+  }
 
   shorten() {
     if (!this.longUrl) return;
 
-    // Tự thêm https:// nếu người dùng quên
-    let url = this.longUrl.trim();
-    if (!url.match(/^https?:\/\//i)) {
-      url = 'https://' + url;
-    }
+    // ⭐ Chuẩn hóa URL trước khi gửi đi
+    const url = this.standardizeUrl(this.longUrl);
 
     this.isCreating = true;
     this.error = '';
     this.result = null;
 
-    this.linkService.createShortLink({ originalUrl: url }).subscribe({
+    this.linkService.createShortLink({
+        originalUrl: url ,
+        generateQrCode: this.generateQrCode
+      },).subscribe({
       next: (res) => {
         this.result = res;
-        console.log(res);
         this.isCreating = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.error = err.error?.message || 'Không thể tạo link. Vui lòng thử lại!';
+        // ⭐ Sửa thông báo lỗi sang tiếng Anh
+        this.error = err.error?.message || 'Failed to create link. Please try again!';
         this.isCreating = false;
         this.cdr.detectChanges();
       }
@@ -54,7 +69,7 @@ export class HomeComponent {
 
   copyToClipboard(text: string) {
     navigator.clipboard.writeText(text);
-    alert('Đã copy: ' + text);
+    alert('copy: ' + text);
   }
 
   downloadQR() {
@@ -67,7 +82,7 @@ export class HomeComponent {
         const a = document.createElement('a');
         a.href = url;
         // @ts-ignore
-        a.download = `QR_${this.result.code}.png`;
+        a.download = `ShortIT_${this.result.code}.png`;
         a.click();
         window.URL.revokeObjectURL(url);
       });

@@ -7,30 +7,35 @@ let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export function authInterceptor(
-  req: HttpRequest<any>,
+  req: HttpRequest<unknown>,
   next: HttpHandlerFn
-): Observable<HttpEvent<any>> {
+): Observable<HttpEvent<unknown>> {
   const authService = inject(AuthService);
 
-  // Thêm withCredentials cho mọi request
   const authReq = req.clone({ withCredentials: true });
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
+      console.log('[Auth Interceptor] Error:', error.status, error.url); // THÊM LOG NÀY ĐỂ DEBUG
+
       if (
-        error.status === 401 &&
+        (error.status === 401 || error.status === 403) &&
         !req.url.includes('/refresh') &&
         !req.url.includes('/login')
       ) {
-        return handle401Error(authReq, next);
+
+        console.log('[Auth Interceptor] 401 detected → trying refresh token');
+        return handle401Error(authReq, next, authService);
       }
+
       return throwError(() => error);
     })
   );
 
   function handle401Error(
     request: HttpRequest<any>,
-    nextFn: HttpHandlerFn
+    next: HttpHandlerFn,
+    authService: AuthService
   ): Observable<HttpEvent<any>> {
     if (!isRefreshing) {
       isRefreshing = true;
@@ -40,21 +45,24 @@ export function authInterceptor(
         switchMap(() => {
           isRefreshing = false;
           refreshTokenSubject.next('done');
-          return nextFn(request.clone({ withCredentials: true }));
+          return next(request.clone({withCredentials: true}));
         }),
-        catchError((err) => {
+        catchError((err: HttpErrorResponse) => {
           isRefreshing = false;
-          authService.logout();
+
+          // Đây chính là chỗ bạn cần: KHI REFRESH FAIL → XÓA HẾT USER
+          console.log('Refresh token failed → force logout');
+          authService.forceLogout(); // XÓA currentUser NGAY LẬP TỨC
+
           return throwError(() => err);
         })
       );
     }
 
-    // Đang refresh → chờ
     return refreshTokenSubject.pipe(
       filter(token => token !== null),
       take(1),
-      switchMap(() => nextFn(request.clone({ withCredentials: true })))
+      switchMap(() => next(request.clone({withCredentials: true})))
     );
   }
 }

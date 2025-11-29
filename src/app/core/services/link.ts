@@ -11,9 +11,14 @@ export class LinkService {
 
   constructor(private http: HttpClient) {}
 
+  createShortLinkPublic(request: CreateShortLinkRequest): Observable<CreateShortLinkResponse> {
+    return this.http.post<CreateShortLinkResponse>(API_URLS.SHORT_LINK.CREATE_PUBLIC, request);
+  }
+
   createShortLink(request: CreateShortLinkRequest): Observable<CreateShortLinkResponse> {
     return this.http.post<CreateShortLinkResponse>(API_URLS.SHORT_LINK.CREATE, request);
   }
+
 
 
   getOriginalUrl(code: string): Observable<string> {

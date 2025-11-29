@@ -5,6 +5,7 @@ const API_VERSION = '/api/v1';
 export const API_URLS = {
   // ============== SHORT LINK ==============
   SHORT_LINK: {
+    CREATE_PUBLIC: `${environment.apiUrl}${API_VERSION}/short-link/create/public`,
     CREATE: `${environment.apiUrl}${API_VERSION}/short-link/create`,
     MY_LINKS: `${environment.apiUrl}${API_VERSION}/short-link/my-links`,
     REDIRECT: (code: string) => `${environment.apiUrl}${API_VERSION}/short-link/${code}`,

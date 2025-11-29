@@ -101,4 +101,16 @@ export class AuthService {
     return this.http.post<RegisterResponse>(API_URLS.AUTH.REGISTER, data);
   }
 
+  clearAuth() {
+    this.currentUserSubject.next(null);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('currentUser');
+    }
+    this.router.navigate(['/login']);
+  }
+
+  forceLogout() {
+    this.clearAuth();
+  }
+
 }

@@ -1,0 +1,39 @@
+// app-layout.component.scss
+main {
+  padding: 2rem 0;
+  min-height: calc(100vh - 80px); /* trừ header + footer */
+}
+
+// app-layout.component.scss (HOẶC global styles.scss)
+
+// 1. Dùng class thay vì inline style (CÁCH TỐT NHẤT & DUY NHẤT ĐÚNG TRONG SCSS)
+.has-sidebar {
+  margin-left: 280px;
+  transition: margin-left 0.3s ease;
+}
+
+.no-sidebar {
+  margin-left: 0;
+}
+
+// 2. Responsive mobile
+@media (max-width: 992px) {
+  .has-sidebar {
+    margin-left: 0 !important;
+  }
+
+  app-sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100vh;
+    z-index: 1040;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+  }
+
+  app-sidebar.show {
+    left: 0;
+  }
+}
