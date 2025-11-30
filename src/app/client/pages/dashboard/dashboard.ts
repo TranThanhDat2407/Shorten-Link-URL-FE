@@ -1,47 +1,34 @@
-import {ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {AsyncPipe, NgIf} from '@angular/common';
+import {ChangeDetectorRef, Component, inject, NgZone} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {NgIf} from "@angular/common";
 import {CreateShortLinkResponse} from '../../../common/models/link.model';
 import {LinkService} from '../../../core/services/link';
-import {AuthService} from '../../../core/services/auth';
-import {Router} from '@angular/router';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-dashboard',
   imports: [
     FormsModule,
-    NgIf
+    ReactiveFormsModule,
+    NgIf,
   ],
-  templateUrl: './home.html',
-  styleUrl: './home.scss',
+  templateUrl: './dashboard.html',
+  styleUrl: './dashboard.scss',
 })
-export class HomeComponent implements OnInit {
-  private authService = inject(AuthService);
-  private router = inject(Router);
+export class UserDashboardComponent {
+  private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
+
+  // Ví dụ: google.com, www.google.com, http://google.com
+  URL_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:(?:\w|-)+\.)+\w{2,}(?:\/[\w- ./?%&=]*)?$/i;
+
   longUrl = '';
   result: CreateShortLinkResponse | null = null;
   isCreating = false;
   generateQrCode = false;
   error = '';
 
-
-  ngOnInit(): void {
-    this.authService.isLoggedIn$.subscribe(isLoggedIn => {
-      if (isLoggedIn) {
-        // Nếu đã đăng nhập → chuyển ngay đến dashboard
-        this.router.navigate(['/user/dashboard']);
-      }
-    });
-  }
-
-  //  Khai báo Regex để kiểm tra cú pháp (Frontend Validation)
-  // Regex này chấp nhận URL có hoặc không có giao thức (http/https),
-  // Ví dụ: google.com, www.google.com, http://google.com
-  URL_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:(?:\w|-)+\.)+\w{2,}(?:\/[\w- ./?%&=]*)?$/i;
-
-
-  constructor(private linkService: LinkService,
-              private cdr: ChangeDetectorRef) {}
+  constructor(private linkService: LinkService
+              ) {}
 
   // ⭐ Hàm chuẩn hóa URL (Tương tự như trong Java, để đảm bảo gửi lên API)
   private standardizeUrl(url: string): string {
@@ -63,13 +50,15 @@ export class HomeComponent implements OnInit {
     this.error = '';
     this.result = null;
 
-    this.linkService.createShortLinkPublic({
-        originalUrl: url ,
-        generateQrCode: this.generateQrCode
-      },).subscribe({
+    this.linkService.createShortLink({
+      originalUrl: url ,
+      generateQrCode: this.generateQrCode
+    },).subscribe({
       next: (res) => {
-        this.result = res;
-        this.isCreating = false;
+        this.zone.run(() => {
+          this.result = res;
+          this.isCreating = false;
+        });
         this.cdr.detectChanges();
       },
       error: (err) => {

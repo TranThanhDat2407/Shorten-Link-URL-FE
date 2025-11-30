@@ -7,35 +7,30 @@ let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export function authInterceptor(
-  req: HttpRequest<unknown>,
+  req: HttpRequest<any>,
   next: HttpHandlerFn
-): Observable<HttpEvent<unknown>> {
+): Observable<HttpEvent<any>> {
   const authService = inject(AuthService);
 
+  // Thêm withCredentials cho mọi request
   const authReq = req.clone({ withCredentials: true });
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      console.log('[Auth Interceptor] Error:', error.status, error.url); // THÊM LOG NÀY ĐỂ DEBUG
-
       if (
-        (error.status === 401 || error.status === 403) &&
+        (error.status === 401 || error.status === 403 ) &&
         !req.url.includes('/refresh') &&
         !req.url.includes('/login')
       ) {
-
-        console.log('[Auth Interceptor] 401 detected → trying refresh token');
-        return handle401Error(authReq, next, authService);
+        return handle401Error(authReq, next);
       }
-
       return throwError(() => error);
     })
   );
 
   function handle401Error(
     request: HttpRequest<any>,
-    next: HttpHandlerFn,
-    authService: AuthService
+    nextFn: HttpHandlerFn
   ): Observable<HttpEvent<any>> {
     if (!isRefreshing) {
       isRefreshing = true;
@@ -45,24 +40,21 @@ export function authInterceptor(
         switchMap(() => {
           isRefreshing = false;
           refreshTokenSubject.next('done');
-          return next(request.clone({withCredentials: true}));
+          return nextFn(request.clone({ withCredentials: true }));
         }),
-        catchError((err: HttpErrorResponse) => {
+        catchError((err) => {
           isRefreshing = false;
-
-          // Đây chính là chỗ bạn cần: KHI REFRESH FAIL → XÓA HẾT USER
-          console.log('Refresh token failed → force logout');
-          authService.forceLogout(); // XÓA currentUser NGAY LẬP TỨC
-
+          authService.logout();
           return throwError(() => err);
         })
       );
     }
 
+    // Đang refresh → chờ
     return refreshTokenSubject.pipe(
       filter(token => token !== null),
       take(1),
-      switchMap(() => next(request.clone({withCredentials: true})))
+      switchMap(() => nextFn(request.clone({ withCredentials: true })))
     );
   }
 }

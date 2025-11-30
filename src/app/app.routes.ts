@@ -1,5 +1,8 @@
 import { Routes } from '@angular/router';
-// import { AdminGuard } from './core/guards/admin.guard';
+import {UserDashboardComponent} from './client/pages/dashboard/dashboard';
+import { AuthGuard } from './core/guards/auth.guard';
+import {RoleGuard} from './core/guards/role.guard';
+import {MyLinkComponent} from './client/pages/my-link/my-link';
 
 export const routes: Routes = [
   // CLIENT ROUTES - đường dẫn bình thường /
@@ -25,6 +28,18 @@ export const routes: Routes = [
 
       { path: 'register', loadComponent: () => import('./client/pages/register/register')
           .then(c => c.RegisterComponent) },
+
+      { path: 'user/dashboard', loadComponent: () => import('./client/pages/dashboard/dashboard')
+          .then(c => c.UserDashboardComponent),
+          canActivate: [AuthGuard, RoleGuard],
+          data: { roles: ['USER', 'ROLE_USER'] }
+      },
+
+      { path: 'user/my-link', loadComponent: () => import('./client/pages/my-link/my-link')
+          .then(c => c.MyLinkComponent),
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['USER', 'ROLE_USER'] }
+      },
 
       {
         path: ':code',

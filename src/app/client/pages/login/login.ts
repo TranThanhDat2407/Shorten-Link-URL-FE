@@ -36,7 +36,6 @@ export class LoginComponent {
   get password() { return this.loginForm.get('password'); }
 
   constructor() {
-    // Nếu đã login rồi thì đá về home
     if (this.authService.getCurrentUser()) {
       this.router.navigate(['/']);
     }

@@ -8,7 +8,7 @@ main {
 
 // 1. Dùng class thay vì inline style (CÁCH TỐT NHẤT & DUY NHẤT ĐÚNG TRONG SCSS)
 .has-sidebar {
-  margin-left: 280px;
+  margin-left: 100px;
   transition: margin-left 0.3s ease;
 }
 

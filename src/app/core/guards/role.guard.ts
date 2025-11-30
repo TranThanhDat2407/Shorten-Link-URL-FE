@@ -1,11 +1,11 @@
-// guards/role.guard.ts
+// src/app/guards/role.guard.ts
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
 import { AuthService } from '../services/auth';
+import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class RoleGuard implements CanActivate {
 
   constructor(
@@ -13,30 +13,43 @@ export class RoleGuard implements CanActivate {
     private router: Router
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
-    const expectedRoles: string[] = route.data['roles'] as string[];
-    const user = this.authService.getCurrentUser();
+  canActivate(route: ActivatedRouteSnapshot): Observable<boolean | UrlTree> {
 
-    if (!user) {
-      this.router.navigate(['/login']);
-      return false;
-    }
+    const expectedRoles: string[] = route.data['roles'] as string[] || [];
 
-    // Nếu không truyền roles → cho qua (chỉ cần login)
-    if (!expectedRoles || expectedRoles.length === 0) {
-      return true;
-    }
+    return this.authService.currentUser$.pipe(
+      take(1),
+      map(user => {
 
-    const hasRole = expectedRoles.some(role =>
-      user.role === role || user.role === 'ROLE_' + role
+        // 1. Chưa đăng nhập → về login
+        if (!user) {
+          const returnUrl = this.router.routerState.snapshot.url;
+          return this.router.createUrlTree(['/login'], { queryParams: { returnUrl } });
+        }
+
+        console.log('RoleGuard - User role hiện tại:', user.role);
+
+        // 2. Không yêu cầu role nào → cho qua
+        if (expectedRoles.length === 0) {
+          return true;
+        }
+
+        // 3. Kiểm tra role
+        const hasRole = expectedRoles.some(expected =>
+          user.role === expected ||
+          user.role === 'ROLE_USER' ||
+          user.role?.startsWith('ROLE_')
+      );
+
+        // 4. Không có quyền → về trang từ chối
+        if (!hasRole) {
+          return this.router.createUrlTree(['/access-denied']);
+          // hoặc ['/'], ['/user/dashboard'] tùy bạn
+        }
+
+        // 5. OK → cho vào
+        return true;
+      })
     );
-
-    if (!hasRole) {
-      // Không có quyền → chuyển về trang 403 hoặc home
-      this.router.navigate(['/access-denied']);
-      return false;
-    }
-
-    return true;
   }
 }

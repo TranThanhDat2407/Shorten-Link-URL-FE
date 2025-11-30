@@ -27,7 +27,8 @@ export class AuthService {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     // Kiểm tra xem đã đăng nhập chưa (khi reload trang)
-    this.checkLoginStatus();
+    // this.checkLoginStatus();
+    setTimeout(() => this.checkLoginStatus(), 0);
   }
 
   login(credentials: any): Observable<any> {
@@ -82,6 +83,21 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  getCurrentUserSync(): any {
+    // Đảm bảo luôn có giá trị mới nhất (trong trường hợp đang delay)
+    let user = this.currentUserSubject.value;
+    if (!user && isPlatformBrowser(this.platformId)) {
+      const saved = localStorage.getItem('currentUser');
+      if (saved) {
+        try {
+          user = JSON.parse(saved);
+          this.currentUserSubject.next(user); // đồng bộ luôn
+        } catch {}
+      }
+    }
+    return user;
+  }
+
   setCurrentUser(user: any): Promise<void> { // Hoặc Observable<any>
     return new Promise(resolve => {
       // Tác vụ Đồng bộ
@@ -99,18 +115,6 @@ export class AuthService {
 
   register(data: RegisterRequest) {
     return this.http.post<RegisterResponse>(API_URLS.AUTH.REGISTER, data);
-  }
-
-  clearAuth() {
-    this.currentUserSubject.next(null);
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('currentUser');
-    }
-    this.router.navigate(['/login']);
-  }
-
-  forceLogout() {
-    this.clearAuth();
   }
 
 }

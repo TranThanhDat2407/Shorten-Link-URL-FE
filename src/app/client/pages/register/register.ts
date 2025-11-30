@@ -35,6 +35,13 @@ export class RegisterComponent {
     retypePassword: ['', [Validators.required]],
   });
 
+
+  constructor() {
+    if (this.authService.getCurrentUser()) {
+      this.router.navigate(['/']);
+    }
+  }
+
   // Getter tiện lợi để truy cập các control của form
   get fullName() {
     return this.registerForm.get('fullName');
