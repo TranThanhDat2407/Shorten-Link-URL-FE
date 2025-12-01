@@ -9,6 +9,8 @@ export const API_URLS = {
     CREATE: `${environment.apiUrl}${API_VERSION}/short-link/create`,
     MY_LINKS: `${environment.apiUrl}${API_VERSION}/short-link/my-links`,
     REDIRECT: (code: string) => `${environment.apiUrl}${API_VERSION}/short-link/${code}`,
+    DELETE: (linkId: number) => `${environment.apiUrl}${API_VERSION}/short-link/${linkId}`,
+    UPDATE: (linkId: number) => `${environment.apiUrl}${API_VERSION}/short-link/${linkId}`,
   },
 
   // ============== AUTH ==============

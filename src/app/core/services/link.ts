@@ -6,6 +6,7 @@ import {API_URLS} from '../../common/constants/api.constants';
 import {PageResponse} from '../../common/models/response/page-response';
 import {LinkResponse} from '../../common/models/response/link-response';
 import {LinkSearchRequest} from '../../common/models/request/link-request';
+import {UpdateLinkRequest} from '../../common/models/request/update-link-request';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +29,15 @@ export class LinkService {
       body,
       { params }
     );
+  }
+
+  deleteLink(linkId: number): Observable<any> {
+    return this.http.delete(API_URLS.SHORT_LINK.DELETE(linkId));
+  }
+
+  updateLink(body: UpdateLinkRequest, linkId: number): Observable<any> {
+    const url = API_URLS.SHORT_LINK.UPDATE(linkId);
+    return this.http.put(url, body);
   }
 
 }

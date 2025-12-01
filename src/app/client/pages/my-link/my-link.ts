@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component, inject, NgZone, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {ChangeDetectorRef, Component, ElementRef, inject, NgZone, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {LinkService} from '../../../core/services/link';
 import {DatePipe, NgForOf, NgIf, SlicePipe} from '@angular/common';
 import {LinkResponse} from '../../../common/models/response/link-response';
@@ -8,6 +8,7 @@ import {LinkSearchRequest} from '../../../common/models/request/link-request';
 import {Router} from '@angular/router';
 import {PageResponse} from '../../../common/models/response/page-response';
 import {HttpParams} from '@angular/common/http';
+import {UpdateLinkRequest} from '../../../common/models/request/update-link-request';
 
 @Component({
   selector: 'app-my-link',
@@ -29,6 +30,7 @@ export class MyLinkComponent implements OnInit {
   private zone = inject(NgZone);
   domain = 'http://localhost:4200';
 
+  URL_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:(?:\w|-)+\.)+\w{2,}(?:\/[\w- ./?%&=]*)?$/i;
 
   links: LinkResponse[] = [];
 
@@ -119,5 +121,90 @@ export class MyLinkComponent implements OnInit {
       alert('Copied!');
     });
   }
+
+  isDeleteModalOpen: boolean = false;
+  isUpdateModalOpen: boolean = false;
+
+  // Trạng thái cho Link đang được chọn
+  selectedLink: LinkResponse | null = null;
+
+  openDeleteModal(link: LinkResponse): void {
+    this.selectedLink = link;
+    this.isDeleteModalOpen = true;
+  }
+
+  // Đóng modal
+  closeDeleteModal(): void {
+    this.isDeleteModalOpen = false;
+    this.selectedLink = null;
+  }
+
+  // Xử lý xác nhận xóa
+  confirmDelete(): void {
+    if (!this.selectedLink) return;
+
+    this.linkService.deleteLink(this.selectedLink.id).subscribe({
+      next: () => {
+        this.closeDeleteModal(); // ✅ Đóng modal
+        this.zone.run(() => {
+          this.loadLinks(this.page);
+
+        this.cdr.detectChanges();
+      });
+      },
+      error: (err) => {
+        console.error('Delete link failed', err);
+        alert('Failed to delete link.');
+        this.closeDeleteModal(); // ✅ Đóng modal
+      }
+    });
+  }
+
+
+  updateForm: FormGroup = this.fb.group({
+    originalUrl: [''],
+  });
+
+  // Mở modal
+  openUpdateModal(link: LinkResponse): void {
+    this.selectedLink = link;
+    this.updateForm.patchValue({
+      originalUrl: link.originalUrl // Điền URL cũ vào form
+    });
+    this.isUpdateModalOpen = true;
+  }
+
+  // Đóng modal
+  closeUpdateModal(): void {
+    this.isUpdateModalOpen = false;
+    this.selectedLink = null;
+    this.updateForm.reset();
+  }
+
+  // Xử lý cập nhật
+  confirmUpdate(): void {
+    if (!this.selectedLink || this.updateForm.invalid) {
+      return;
+    }
+
+    const updatedUrl: string = this.updateForm.value.originalUrl;
+    const requestBody: UpdateLinkRequest = { originalUrl: updatedUrl };
+
+    this.linkService.updateLink(requestBody, this.selectedLink.id).subscribe({
+      next: () => {
+        this.zone.run(() => {
+        this.closeUpdateModal(); // ✅ Đóng modal
+        this.loadLinks(this.page);
+        this.cdr.detectChanges();
+        });
+      },
+      error: (err) => {
+        console.error('Update link failed', err);
+        alert('Failed to update link.');
+        this.closeUpdateModal(); // ✅ Đóng modal
+      }
+    });
+  }
+
 
 }
