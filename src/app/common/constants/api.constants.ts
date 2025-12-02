@@ -11,6 +11,8 @@ export const API_URLS = {
     REDIRECT: (code: string) => `${environment.apiUrl}${API_VERSION}/short-link/${code}`,
     DELETE: (linkId: number) => `${environment.apiUrl}${API_VERSION}/short-link/${linkId}`,
     UPDATE: (linkId: number) => `${environment.apiUrl}${API_VERSION}/short-link/${linkId}`,
+    DETAILS: (linkId: number) => `${environment.apiUrl}${API_VERSION}/short-link/details/${linkId}`,
+    LOGS: (linkId: number) => `${environment.apiUrl}${API_VERSION}/short-link/${linkId}/logs`,
   },
 
   // ============== AUTH ==============

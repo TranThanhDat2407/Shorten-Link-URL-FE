@@ -61,6 +61,7 @@
         <div *ngFor="let link of links" class="lc-block p-3 card shadow position-relative mb-3 rounded-3 border-0">
           <div class="card-body">
             <!-- Header with Title and Actions -->
+
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h2 class="fw-bold h5 mb-0 text-truncate" style="max-width: 70%;">
                 {{ link.originalUrl | slice:0:50 }}...
@@ -72,6 +73,11 @@
                 <button class="btn btn-outline-danger btn-sm" (click)="openDeleteModal(link)">
                   <i class="bi bi-trash me-1"></i> Delete
                 </button>
+
+                <button class="btn btn-outline-primary btn-sm" [routerLink]="['/user/my-link', link.id]">
+                  View Link Detail
+                </button>
+
               </div>
             </div>
 
@@ -176,6 +182,7 @@
       </div>
     </div>
   </div>
+  <div class="modal-backdrop fade show" *ngIf="isDeleteModalOpen" (click)="closeDeleteModal()"></div>
 
 
   <div class="modal fade"
@@ -230,6 +237,7 @@
       </div>
     </div>
   </div>
+  <div class="modal-backdrop fade show" *ngIf="isUpdateModalOpen" (click)="closeUpdateModal()"></div>
 
 </section>
 

@@ -24,7 +24,7 @@ export class RoleGuard implements CanActivate {
         // 1. Chưa đăng nhập → về login
         if (!user) {
           const returnUrl = this.router.routerState.snapshot.url;
-          return this.router.createUrlTree(['/login'], { queryParams: { returnUrl } });
+          return this.router.createUrlTree(['/login']);
         }
 
         console.log('RoleGuard - User role hiện tại:', user.role);

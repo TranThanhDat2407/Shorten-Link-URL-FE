@@ -24,9 +24,7 @@ export class AuthGuard implements CanActivate {
 
         // Lưu URL để login xong quay lại
         const returnUrl = this.router.routerState.snapshot.url;
-        return this.router.createUrlTree(['/login'], {
-          queryParams: { returnUrl }
-        });
+        return this.router.createUrlTree(['/login']);
       })
     );
   }

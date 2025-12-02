@@ -7,6 +7,7 @@ import {PageResponse} from '../../common/models/response/page-response';
 import {LinkResponse} from '../../common/models/response/link-response';
 import {LinkSearchRequest} from '../../common/models/request/link-request';
 import {UpdateLinkRequest} from '../../common/models/request/update-link-request';
+import {LinkClickLogResponse} from '../../common/models/response/link-click-log.response';
 
 @Injectable({
   providedIn: 'root',
@@ -40,4 +41,11 @@ export class LinkService {
     return this.http.put(url, body);
   }
 
+  getLinkDetails(id: number): Observable<LinkResponse> {
+    return this.http.get<LinkResponse>(API_URLS.SHORT_LINK.DETAILS(id));
+  }
+
+  getLinkClickLogs(id: number, params: HttpParams): Observable<PageResponse<LinkClickLogResponse>> {
+    return this.http.get<PageResponse<LinkClickLogResponse>>(API_URLS.SHORT_LINK.LOGS(id), { params });
+  }
 }

@@ -5,7 +5,7 @@ import {DatePipe, NgForOf, NgIf, SlicePipe} from '@angular/common';
 import {LinkResponse} from '../../../common/models/response/link-response';
 import {environment} from '../../../environments/environment';
 import {LinkSearchRequest} from '../../../common/models/request/link-request';
-import {Router} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {PageResponse} from '../../../common/models/response/page-response';
 import {HttpParams} from '@angular/common/http';
 import {UpdateLinkRequest} from '../../../common/models/request/update-link-request';
@@ -18,7 +18,8 @@ import {UpdateLinkRequest} from '../../../common/models/request/update-link-requ
     DatePipe,
     SlicePipe,
     NgForOf,
-    NgIf
+    NgIf,
+    RouterLink
   ],
   templateUrl: './my-link.html',
   styleUrl: './my-link.scss',
