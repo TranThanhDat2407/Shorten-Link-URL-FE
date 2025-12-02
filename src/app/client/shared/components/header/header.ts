@@ -20,6 +20,5 @@ export class Header {
 
   logout(): void {
     this.authService.logout();
-
   }
 }

@@ -37,13 +37,13 @@ export class RoleGuard implements CanActivate {
         // 3. Kiểm tra role
         const hasRole = expectedRoles.some(expected =>
           user.role === expected ||
-          user.role === 'ROLE_USER' ||
           user.role?.startsWith('ROLE_')
       );
 
         // 4. Không có quyền → về trang từ chối
         if (!hasRole) {
-          return this.router.createUrlTree(['/access-denied']);
+           this.authService.logout();
+          // return this.router.createUrlTree(['/user/login']);
           // hoặc ['/'], ['/user/dashboard'] tùy bạn
         }
 

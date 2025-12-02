@@ -58,18 +58,22 @@ export const routes: Routes = [
 
   // ADMIN ROUTES - bắt đầu bằng /admin
 
-  // {
-  //   path: 'admin',
-  //   loadComponent: () => import('./admin/layout/admin-layout/admin-layout.component')
-  //     .then(c => c.AdminLayoutComponent),
-  //   canActivate: [AuthGuard, RoleGuard],
-  //   data: { roles: ['ADMIN', 'ROLE_ADMIN'] }
-  //   children: [
-  //     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  //     { path: 'dashboard', loadComponent: () => import('./admin/pages/dashboard/dashboard.component').then(c => c.DashboardComponent) },
-  //     // các trang admin khác
-  //   ]
-  // },
+  {
+    path: 'admin',
+    loadComponent: () => import('./admin/layout/admin-layout/admin-layout')
+      .then(c => c.AdminLayoutComponent),
+    children: [
+      { path: 'login', loadComponent: () => import('./admin/pages/login/login')
+          .then(c => c.AdminLoginComponent) },
+
+      { path: 'dashboard', loadComponent: () => import('./admin/pages/dashboard/dashboard')
+          .then(c => c.AdminDashboardComponent),
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN', 'ROLE_ADMIN'] }
+      },
+
+    ]
+  },
 
   { path: '**', redirectTo: '/not-found' }
 ];

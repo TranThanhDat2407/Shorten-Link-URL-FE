@@ -51,15 +51,22 @@ export class AuthService {
     );
   }
 
+  logoutAdmin() {
+    this.currentUserSubject.next(null);
+    localStorage.removeItem('currentUser');
+    this.http.post(API_URLS.AUTH.LOGOUT, {}, { withCredentials: true });
+  }
+
+
   logout() {
     // Gọi backend để xóa refresh token (nếu bạn có endpoint /logout)
     this.http.post(API_URLS.AUTH.LOGOUT, {}, { withCredentials: true }).subscribe({
       next: () => this.handleLogoutSuccess(),
-      error: () => this.handleLogoutSuccess() // vẫn logout dù lỗi
+      error: () => this.handleLogoutSuccess()
     });
   }
 
-  private handleLogoutSuccess() {
+  private handleLogoutSuccess(noRedirect: boolean = false) {
     this.currentUserSubject.next(null);
     localStorage.removeItem('currentUser');
     this.router.navigate(['/login']);
