@@ -1,2 +1,16 @@
 <app-admin-header></app-admin-header>
-<router-outlet></router-outlet>
+<div class="d-flex">
+  <!-- Sidebar -->
+  <app-admin-sidebar *ngIf="isLoggedIn$ | async"></app-admin-sidebar>
+
+  <!-- Main content -->
+  <div class="flex-grow-1 "
+       [class.has-sidebar]="isLoggedIn$ | async"
+       [class.no-sidebar]="!(isLoggedIn$ | async)">
+
+    <main class="min-vh-100 bg-light ps-5 pe-5" >
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+</div>
