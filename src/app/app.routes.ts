@@ -4,6 +4,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 import {RoleGuard} from './core/guards/role.guard';
 import {MyLinkComponent} from './client/pages/my-link/my-link';
 import {LinkDetailsComponent} from './client/pages/link-details/link-details';
+import {AdminLinkComponent} from './admin/pages/links/links';
 
 export const routes: Routes = [
   // CLIENT ROUTES - đường dẫn bình thường /
@@ -68,6 +69,11 @@ export const routes: Routes = [
 
       { path: 'dashboard', loadComponent: () => import('./admin/pages/dashboard/dashboard')
           .then(c => c.AdminDashboardComponent),
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN', 'ROLE_ADMIN'] }
+      },
+      { path: 'links', loadComponent: () => import('./admin/pages/links/links')
+          .then(c => c.AdminLinkComponent),
         canActivate: [AuthGuard, RoleGuard],
         data: { roles: ['ADMIN', 'ROLE_ADMIN'] }
       },

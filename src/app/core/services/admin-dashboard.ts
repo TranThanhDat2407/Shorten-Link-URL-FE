@@ -25,4 +25,12 @@ export class AdminAnalyzeService {
   getChartData(): Observable<AdminDailyClickResponse[]> {
     return this.http.get<AdminDailyClickResponse[]>(API_URLS.ADMIN.CHART7DAYS);
   }
+
+  getLinks(body: LinkSearchRequest, params: HttpParams): Observable<PageResponse<LinkResponse>> {
+    return this.http.post<PageResponse<LinkResponse>>(
+      API_URLS.ADMIN.LINKS,
+      body,
+      { params }
+    );
+  }
 }

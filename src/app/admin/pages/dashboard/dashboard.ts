@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, inject, NgZone, OnInit, ViewChild} from '@angular/core';
 import {AdminAnalyzeService} from '../../../core/services/admin-dashboard';
 import {AdminDailyClickResponse} from '../../../common/models/response/daily-click-response';
 import {AdminDashboardResponse} from '../../../common/models/response/admin-dashboard-response';
@@ -16,7 +16,7 @@ Chart.register(...registerables, ChartDataLabels);
 })
 export class AdminDashboardComponent implements OnInit {
 private cdr = inject(ChangeDetectorRef);
-
+  private zone = inject(NgZone);
   @ViewChild('clicksChart') clicksChartRef!: ElementRef<HTMLCanvasElement>;
 
   dashboardData: AdminDashboardResponse = {
@@ -40,7 +40,7 @@ private cdr = inject(ChangeDetectorRef);
       next: (data: AdminDashboardResponse) => {
         this.dashboardData = data;
         this.checkLoading();
-
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to load dashboard data', err);
@@ -52,11 +52,12 @@ private cdr = inject(ChangeDetectorRef);
   private fetchChartData(): void {
     this.adminAnalyzeService.getChartData().subscribe({
       next: (data: AdminDailyClickResponse[]) => {
-        this.chartData = data;
 
-        this.initChart();
-        this.cdr.detectChanges();
-        this.checkLoading();
+          this.chartData = data;
+          this.initChart();
+          this.checkLoading();
+          this.cdr.detectChanges();
+
       },
       error: (err) => {
         console.error('Failed to load chart data', err);

@@ -1,0 +1,254 @@
+<section>
+  <div class="container py-6">
+
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <div class="lc-block text-center text-md-start mb-3">
+          <div editable="rich">
+            <h1 class="display-5 fw-bold">Links</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH + FILTER -->
+    <div class="col-md-11 mb-6 mb-md-5">
+
+      <form [formGroup]="searchForm" (ngSubmit)="onFilter()" class="mb-4">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <input
+              type="text"
+              formControlName="keyword"
+              class="form-control"
+              placeholder="Search by short code or original URL..."
+            />
+          </div>
+
+          <div class="col-md-3">
+            <input
+              type="date"
+              formControlName="createdFrom"
+              class="form-control"
+              placeholder="From date"
+            />
+          </div>
+
+          <div class="col-md-3">
+            <input
+              type="date"
+              formControlName="createdTo"
+              class="form-control"
+              placeholder="To date"
+            />
+          </div>
+
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="bi bi-search"></i> Filter
+            </button>
+          </div>
+        </div>
+      </form>
+
+
+    </div>
+
+    <div class="row pt-3">
+      <div class="col-md-11 mb-6 mb-md-5">
+
+        <div *ngFor="let link of links" class="lc-block p-3 card shadow position-relative mb-3 rounded-3 border-0">
+          <div class="card-body">
+            <!-- Header with Title and Actions -->
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="mb-2">
+                <h2 class="fw-bold h5 mb-0 text-truncate">
+                  {{ link.originalUrl | slice:0:50 }}...
+                </h2>
+                @if (link.userEmail != ' '){
+                  <small class="text-muted">
+                    Owner:
+                    <small class="text-muted fw-bold">{{ link.userEmail }} </small>
+                  </small>
+                } @else {
+                  <small class="text-muted">
+                    Guess
+                  </small>
+                }
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-warning btn-sm" (click)="openUpdateModal(link)">
+                  <i class="bi bi-pencil-square me-1"></i> Edit
+                </button>
+                <button class="btn btn-outline-danger btn-sm" (click)="openDeleteModal(link)">
+                  <i class="bi bi-trash me-1"></i> Delete
+                </button>
+
+                <button class="btn btn-outline-primary btn-sm" [routerLink]="['/admin/link', link.id]">
+                  View Link Detail
+                </button>
+
+              </div>
+            </div>
+
+            <!-- Short Link Section -->
+            <div class="mb-3 p-2 bg-light rounded-2 d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center flex-grow-1">
+                <span class="fw-semibold text-primary me-2">Short Link:</span>
+                <a [href]="getShortLink(link.shortCode)" target="_blank" class="text-primary text-decoration-none text-truncate flex-grow-1">
+                  {{ domain }}/{{ link.shortCode }}
+                </a>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary ms-2" (click)="copyToClipboard(getShortLink(link.shortCode))">
+                <i class="bi bi-clipboard"></i> Copy
+              </button>
+            </div>
+
+            <!-- Original Link Section -->
+            <div class="mb-3 p-2 bg-light rounded-2 d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center flex-grow-1">
+                <span class="fw-semibold text-muted me-2">Original URL:</span>
+                <a [href]="link.originalUrl" target="_blank" class="text-muted text-decoration-none text-truncate flex-grow-1">
+                  {{ link.originalUrl }}
+                </a>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary ms-2" (click)="copyToClipboard(link.originalUrl)">
+                <i class="bi bi-clipboard"></i> Copy
+              </button>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="d-flex justify-content-between text-secondary fs-6">
+              <div>
+                <i class="bi bi-calendar-event me-1"></i>
+                Created: {{ link.createdAt | date:'dd/MM/yyyy HH:mm' }}
+              </div>
+              <div>
+                <i class="bi bi-mouse me-1"></i>
+                Clicks: {{ link.clickCount }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <nav *ngIf="totalPages > 0" aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+
+        <!-- Previous -->
+        <li class="page-item" [class.disabled]="page === 0">
+          <button class="page-link" (click)="goToPage(page - 1)">
+            Previous
+          </button>
+        </li>
+
+        <li *ngFor="let i of pageNumbers"
+            class="page-item"
+            [class.active]="i === page">
+          <button class="page-link" (click)="goToPage(i)">
+            {{ i + 1 }}
+          </button>
+        </li>
+
+        <!-- Next -->
+        <li class="page-item" [class.disabled]="page === totalPages - 1">
+          <button class="page-link" (click)="goToPage(page + 1)">
+            Next
+          </button>
+        </li>
+
+      </ul>
+    </nav>
+
+  </div>
+
+
+  <div class="modal fade"
+       [class.show]="isDeleteModalOpen"
+       [class.d-block]="isDeleteModalOpen"
+       tabindex="-1"
+       role="dialog"
+       *ngIf="isDeleteModalOpen">
+
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Deletion</h5>
+          <button type="button" class="btn-close" (click)="closeDeleteModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this link?
+          <p class="text-danger fw-bold mt-2">{{ selectedLink?.originalUrl | slice:0:70 }}...</p>
+          <p>This action cannot be undo.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+          <button type="button" class="btn btn-danger" (click)="confirmDelete()">
+            <i class="bi bi-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="isDeleteModalOpen" (click)="closeDeleteModal()"></div>
+
+
+  <div class="modal fade"
+       [class.show]="isUpdateModalOpen"
+       [class.d-block]="isUpdateModalOpen"
+       tabindex="-1"
+       role="dialog"
+       *ngIf="isUpdateModalOpen">
+
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Update Original Link</h5>
+          <button type="button" class="btn-close" (click)="closeUpdateModal()" aria-label="Close"></button>
+        </div>
+
+        <form [formGroup]="updateForm" (ngSubmit)="confirmUpdate()">
+          <div class="modal-body">
+
+            <div *ngIf="selectedLink" class="alert alert-info p-2 mb-3 small">
+              <strong>Current URL:</strong>
+              <a [href]="selectedLink.originalUrl" target="_blank" class="text-decoration-none">
+                {{ selectedLink.originalUrl }}
+              </a>
+            </div>
+
+            <label for="originalUrlInput" class="form-label">New Original URL:</label>
+            <input
+              type="url"
+              class="form-control"
+              id="originalUrlInput"
+              formControlName="originalUrl"
+              placeholder="Enter the new long URL"
+              [class.is-invalid]="updateForm.get('originalUrl')?.invalid
+              && updateForm.get('originalUrl')?.touched"
+              [pattern]="URL_REGEX"
+              required
+            >
+            <div *ngIf="updateForm.get('originalUrl')?.invalid
+            && (updateForm.get('originalUrl')?.dirty || updateForm.get('originalUrl')?.touched)"
+                 class="text-danger mt-1">
+              Original URL is required and must be a valid URL format.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeUpdateModal()">Cancel</button>
+            <button type="submit" class="btn btn-warning" [disabled]="updateForm.invalid">
+              <i class="bi bi-pencil-square"></i> Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="isUpdateModalOpen" (click)="closeUpdateModal()"></div>
+
+</section>
+

@@ -31,10 +31,10 @@ export const API_URLS = {
   // ============== ADMIN ==============
   ADMIN: {
     DASHBOARD: `${environment.apiUrl}${API_VERSION}/admin/analytics/dashboard`,
+    LINKS: `${environment.apiUrl}${API_VERSION}/short-link`,
     CHART7DAYS: `${environment.apiUrl}${API_VERSION}/admin/analytics/chart/7days`,
     TOPLINKS: `${environment.apiUrl}${API_VERSION}/admin/analytics/top-links`,
     ADMINLINKDETAILS: (shortCode: String) =>
       `${environment.apiUrl}${API_VERSION}/admin/analytics/link/${shortCode}`,
-
   }
 } as const;
