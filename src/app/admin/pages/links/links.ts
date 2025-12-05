@@ -8,7 +8,7 @@ import {HttpParams} from '@angular/common/http';
 import {PageResponse} from '../../../common/models/response/page-response';
 import {UpdateLinkRequest} from '../../../common/models/request/update-link-request';
 import {RouterLink} from '@angular/router';
-import {AdminAnalyzeService} from '../../../core/services/admin-dashboard';
+import {AdminAnalyzeService} from '../../../core/services/admin-analyze';
 
 @Component({
   selector: 'app-links',
@@ -43,6 +43,9 @@ export class AdminLinkComponent implements OnInit{
 
   searchForm: FormGroup = this.fb.group({
     keyword: [''],
+    userId: [''],
+    email: [''],
+    guestOnly: [false],
     createdFrom: [''],
     createdTo: [''],
   });
@@ -66,8 +69,12 @@ export class AdminLinkComponent implements OnInit{
     this.isLoading = true;
     const val = this.searchForm.value;
     const keyword = val.keyword?.trim() || null;
+    const userId = val.guestOnly ? 0 : (val.userId || null);
+    const email = val.guestOnly ? null : (val.email || null);
 
     const body: LinkSearchRequest = {
+      userId: userId,
+      email: email,
       shortCode: keyword || null,
       originalUrl: keyword || null,
       createdFrom: val.createdFrom ? this.toUtcStartOfDay(val.createdFrom) : null,

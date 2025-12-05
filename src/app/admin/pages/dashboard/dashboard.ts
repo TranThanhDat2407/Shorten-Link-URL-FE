@@ -1,10 +1,11 @@
 import {ChangeDetectorRef, Component, ElementRef, inject, NgZone, OnInit, ViewChild} from '@angular/core';
-import {AdminAnalyzeService} from '../../../core/services/admin-dashboard';
+import {AdminAnalyzeService} from '../../../core/services/admin-analyze';
 import {AdminDailyClickResponse} from '../../../common/models/response/daily-click-response';
 import {AdminDashboardResponse} from '../../../common/models/response/admin-dashboard-response';
 import {Chart, registerables, ChartConfiguration} from 'chart.js';
 import 'chartjs-adapter-luxon';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {AdminDailyLinkResponse} from '../../../common/models/response/daily-link-response';
 
 Chart.register(...registerables, ChartDataLabels);
 
@@ -17,7 +18,9 @@ Chart.register(...registerables, ChartDataLabels);
 export class AdminDashboardComponent implements OnInit {
 private cdr = inject(ChangeDetectorRef);
   private zone = inject(NgZone);
+
   @ViewChild('clicksChart') clicksChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('linksChart') linksChartRef!: ElementRef<HTMLCanvasElement>;
 
   dashboardData: AdminDashboardResponse = {
     totalLinks: 0,
@@ -26,6 +29,7 @@ private cdr = inject(ChangeDetectorRef);
     todayNewLinks: 0
   };
   chartData: AdminDailyClickResponse[] = [];
+  chartLinkData: AdminDailyLinkResponse[] = [];
   isLoading = true;
 
   constructor(private adminAnalyzeService: AdminAnalyzeService) {}
@@ -33,6 +37,7 @@ private cdr = inject(ChangeDetectorRef);
   ngOnInit(): void {
     this.fetchDashboardData();
     this.fetchChartData();
+    this.fetchChartLinkData();
   }
 
   private fetchDashboardData(): void {
@@ -66,6 +71,23 @@ private cdr = inject(ChangeDetectorRef);
     });
   }
 
+
+  private fetchChartLinkData(): void {
+    this.adminAnalyzeService.getChartLinkData().subscribe({
+      next: (data: AdminDailyLinkResponse[]) => {
+
+        this.chartLinkData = data;
+        this.initLinksChart()
+        this.cdr.detectChanges();
+        this.checkLoading();
+
+      },
+      error: (err) => {
+        console.error('Failed to load chart data', err);
+        this.checkLoading();
+      }
+    });
+  }
 
   private initChart(): void {
     if (!this.clicksChartRef || this.chartData.length === 0) {
@@ -160,6 +182,68 @@ private cdr = inject(ChangeDetectorRef);
     // 3. Khởi tạo biểu đồ
     new Chart(ctx, chartConfig);
   }
+
+
+  private initLinksChart(): void {
+    if (!this.linksChartRef || this.chartLinkData.length === 0) {
+      return;
+    }
+
+    const maxLinksValue = Math.max(...this.chartLinkData.map(x => x.links));
+
+    const ctx = this.linksChartRef.nativeElement;
+
+    const chartDataFormatted = this.chartLinkData.map(item => ({
+      x: new Date(item.date).getTime(),
+      y: item.links
+    }));
+
+    const config: ChartConfiguration<'line'> = {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'New Links',
+          data: chartDataFormatted,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          datalabels: {
+            align: 'end',
+            anchor: 'end',
+            color: '#6c757d',
+            font: { size: 10, weight: 'bold' },
+            formatter: v => v.y
+          }
+        },
+        scales: {
+          x: {
+            type: 'timeseries',
+            time: {
+              unit: 'day',
+              displayFormats: { day: 'dd/MM' }
+            }
+          },
+          y: {
+            beginAtZero: true,
+            suggestedMax: maxLinksValue * 1.2,
+            ticks: { precision: 0 },
+            title: { display: true, text: 'Links' }
+          }
+        }
+      }
+    };
+
+    new Chart(ctx, config);
+  }
+
 
 
   private checkLoading(): void {

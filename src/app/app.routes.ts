@@ -77,6 +77,11 @@ export const routes: Routes = [
         canActivate: [AuthGuard, RoleGuard],
         data: { roles: ['ADMIN', 'ROLE_ADMIN'] }
       },
+      { path: 'links/:id', loadComponent: () => import('./admin/pages/admin-link-details/admin-link-details')
+          .then(c => c.AdminLinkDetailsComponent),
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN', 'ROLE_ADMIN'] }
+      },
 
     ]
   },

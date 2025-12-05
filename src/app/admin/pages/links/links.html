@@ -1,5 +1,5 @@
-<section>
-  <div class="container py-6">
+
+  <div class="container py-5">
 
     <div class="row">
       <div class="col-md-12 text-center">
@@ -16,43 +16,95 @@
 
       <form [formGroup]="searchForm" (ngSubmit)="onFilter()" class="mb-4">
         <div class="row g-3 align-items-end">
+
+          <!-- Keyword -->
           <div class="col-md-4">
+            <label class="form-label fw-semibold">Keyword</label>
             <input
               type="text"
               formControlName="keyword"
               class="form-control"
-              placeholder="Search by short code or original URL..."
+              placeholder="Short code or Original URL"
             />
           </div>
 
+          <!-- From date -->
           <div class="col-md-3">
+            <label class="form-label fw-semibold">Created From</label>
             <input
               type="date"
               formControlName="createdFrom"
               class="form-control"
-              placeholder="From date"
             />
           </div>
 
+          <!-- To date -->
           <div class="col-md-3">
+            <label class="form-label fw-semibold">Created To</label>
             <input
               type="date"
               formControlName="createdTo"
               class="form-control"
-              placeholder="To date"
             />
           </div>
 
+        </div>
+
+        <!-- Hàng 2 -->
+        <div class="row g-3 align-items-end mt-2">
+
+          <!-- User ID -->
           <div class="col-md-2">
+            <label class="form-label fw-semibold">User ID</label>
+            <input
+              type="number"
+              formControlName="userId"
+              class="form-control"
+              placeholder="123"
+              [disabled]="searchForm.get('guestOnly')?.value"
+            />
+          </div>
+
+          <!-- Email -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Email</label>
+            <input
+              type="text"
+              formControlName="email"
+              class="form-control"
+              placeholder="Search email..."
+              [disabled]="searchForm.get('guestOnly')?.value"
+            />
+          </div>
+
+          <!-- Guest-only -->
+          <div class="col-md-2">
+            <label class="form-label fw-semibold">Filter Guest</label>
+            <div class="form-check mt-2">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                formControlName="guestOnly"
+                id="guestOnly"
+              />
+              <label class="form-check-label" for="guestOnly">Guest only</label>
+            </div>
+          </div>
+
+          <!-- Filter button -->
+          <div class="col-md-2">
+            <label class="form-label opacity-0">Filter</label>
             <button type="submit" class="btn btn-primary w-100">
               <i class="bi bi-search"></i> Filter
             </button>
           </div>
+
         </div>
       </form>
 
-
     </div>
+
+
 
     <div class="row pt-3">
       <div class="col-md-11 mb-6 mb-md-5">
@@ -73,9 +125,10 @@
                   </small>
                 } @else {
                   <small class="text-muted">
-                    Guess
+                    Guest
                   </small>
                 }
+
               </div>
               <div class="d-flex gap-2">
                 <button class="btn btn-outline-warning btn-sm" (click)="openUpdateModal(link)">
@@ -85,7 +138,7 @@
                   <i class="bi bi-trash me-1"></i> Delete
                 </button>
 
-                <button class="btn btn-outline-primary btn-sm" [routerLink]="['/admin/link', link.id]">
+                <button class="btn btn-outline-primary btn-sm" [routerLink]="['/admin/links', link.id]">
                   View Link Detail
                 </button>
 
@@ -250,5 +303,4 @@
   </div>
   <div class="modal-backdrop fade show" *ngIf="isUpdateModalOpen" (click)="closeUpdateModal()"></div>
 
-</section>
 

@@ -10,6 +10,9 @@ import {UpdateLinkRequest} from '../../common/models/request/update-link-request
 import {LinkClickLogResponse} from '../../common/models/response/link-click-log.response';
 import {AdminDailyClickResponse} from '../../common/models/response/daily-click-response';
 import {AdminDashboardResponse} from '../../common/models/response/admin-dashboard-response';
+import {AdminDailyLinkResponse} from '../../common/models/response/daily-link-response';
+import {AdminLinkDetailsComponent} from '../../admin/pages/admin-link-details/admin-link-details';
+import {AdminLinkDetailsResponse} from '../../common/models/response/admin-link-details-response';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +26,11 @@ export class AdminAnalyzeService {
   }
 
   getChartData(): Observable<AdminDailyClickResponse[]> {
-    return this.http.get<AdminDailyClickResponse[]>(API_URLS.ADMIN.CHART7DAYS);
+    return this.http.get<AdminDailyClickResponse[]>(API_URLS.ADMIN.CHART7DAYSCLICK);
+  }
+
+  getChartLinkData(): Observable<AdminDailyLinkResponse[]> {
+    return this.http.get<AdminDailyLinkResponse[]>(API_URLS.ADMIN.CHART7DAYSLINK);
   }
 
   getLinks(body: LinkSearchRequest, params: HttpParams): Observable<PageResponse<LinkResponse>> {
@@ -32,5 +39,9 @@ export class AdminAnalyzeService {
       body,
       { params }
     );
+  }
+
+  getAdminLinkDetails(shortCode: string): Observable<AdminLinkDetailsResponse> {
+    return this.http.get<AdminLinkDetailsResponse>(API_URLS.ADMIN.LINKDETAILS(shortCode));
   }
 }
