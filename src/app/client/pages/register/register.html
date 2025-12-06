@@ -11,13 +11,21 @@
             </div>
           </div>
 
-          <div *ngIf="showSuccessModal" class="success-modal-overlay">
-            <div class="alert alert-success success-modal-content" role="alert">
-              <h4 class="alert-heading">✅ Registration Successful!</h4>
-              <p>Your account has been created successfully.
-                The system will automatically redirect you to the Login page in 5 seconds...</p>
+          <div class="modal fade" id="registerSuccessModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content border-success">
+                <div class="modal-header bg-success text-white">
+                  <h5 class="modal-title">Registration Successful</h5>
+                </div>
+
+                <div class="modal-body text-center py-4">
+                  <p>Your account has been created successfully!</p>
+                  <p>You will be redirected to <strong>Login</strong> in 5 seconds...</p>
+                </div>
+              </div>
             </div>
           </div>
+
 
 
 

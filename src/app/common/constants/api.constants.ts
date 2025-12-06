@@ -22,6 +22,9 @@ export const API_URLS = {
     LOGOUT: `${environment.apiUrl}${API_VERSION}/auth/logout`,
     REFRESH_TOKEN: `${environment.apiUrl}${API_VERSION}/auth/refresh`,
     GOOGLE_LOGIN: `${environment.apiUrl}/oauth2/authorization/google`,
+    FORGOT_PASSWORD: `${environment.apiUrl}${API_VERSION}/auth/forgot-password`,
+    VERIFY_OTP: `${environment.apiUrl}${API_VERSION}/auth/verify-otp`,
+    RESET_PASSWORD: `${environment.apiUrl}${API_VERSION}/auth/reset-password`,
   },
 
   // ============== USER ==============

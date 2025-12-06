@@ -15,13 +15,21 @@ export function authInterceptor(
   // Thêm withCredentials cho mọi request
   const authReq = req.clone({ withCredentials: true });
 
+  const publicEndpoints = [
+    '/login',
+    '/register',
+    '/forgot-password',
+    '/verify-otp',
+    '/reset-password',
+    '/refresh'
+  ];
+
+  const isPublic = publicEndpoints.some(ep => req.url.includes(ep));
+
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       if (
-        (error.status === 401 || error.status === 403 ) &&
-        !req.url.includes('/refresh') &&
-        !req.url.includes('/login')
-      ) {
+        (error.status === 401 || error.status === 403 ) && !isPublic){
         return handle401Error(authReq, next);
       }
       return throwError(() => error);

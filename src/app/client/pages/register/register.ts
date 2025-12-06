@@ -4,7 +4,7 @@ import { AuthService } from '../../../core/services/auth';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {RegisterRequest} from '../../../common/models/request/register-request.model';
-
+declare var bootstrap: any;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
 @Component({
   selector: 'app-register',
@@ -26,7 +26,6 @@ export class RegisterComponent {
   successMessage = '';
   // Biến để theo dõi form đã được gửi hay chưa, giúp hiển thị lỗi sau khi submit
   submitted = false;
-  showSuccessModal = false;
 
   // Đã thêm 'fullName' vào form group
   registerForm = this.fb.group({
@@ -34,6 +33,17 @@ export class RegisterComponent {
     password: ['', [Validators.required]],
     retypePassword: ['', [Validators.required]],
   });
+
+  showSuccessModal() {
+    const modalEl = document.getElementById('registerSuccessModal');
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+
+    setTimeout(() => {
+      modal.hide();
+      this.router.navigate(['/login']);
+    }, 5000);
+  }
 
 
   constructor() {
@@ -95,7 +105,7 @@ export class RegisterComponent {
 
     const formValue = this.registerForm.value;
 
-    // Lấy dữ liệu, KHÔNG LẤY retypePassword
+    // Lấy dữ liệu
     const registerData: RegisterRequest = {
       email: formValue.email?.trim() ?? '',
       password: formValue.password ?? '',
@@ -105,7 +115,7 @@ export class RegisterComponent {
 
       next: (res) => {
         this.isLoading = false;
-        this.showSuccessModal = true;
+        this.showSuccessModal();
         this.cdr.detectChanges();
         setTimeout(() => this.router.navigate(['/login']), 5000);
       },
@@ -121,5 +131,7 @@ export class RegisterComponent {
     });
 
   }
+
+
 
 }

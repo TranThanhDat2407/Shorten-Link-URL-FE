@@ -8,6 +8,8 @@ import {API_URLS} from '../../common/constants/api.constants';
 import { isPlatformBrowser } from '@angular/common';
 import {RegisterResponse} from '../../common/models/response/register-response';
 import {RegisterRequest} from '../../common/models/request/register-request.model';
+import {VerifyOtpRequest} from '../../common/models/request/verify-otp-request';
+import {ResetPasswordRequest} from '../../common/models/request/reset-password-request';
 
 @Injectable({
   providedIn: 'root',
@@ -122,6 +124,18 @@ export class AuthService {
 
   register(data: RegisterRequest) {
     return this.http.post<RegisterResponse>(API_URLS.AUTH.REGISTER, data);
+  }
+
+  sendOtp(email: string) {
+    return this.http.post(API_URLS.AUTH.FORGOT_PASSWORD, { email });
+  }
+
+  verifyOtp(data: VerifyOtpRequest) {
+    return this.http.post(API_URLS.AUTH.VERIFY_OTP,data ,{ withCredentials: true });
+  }
+
+  resetPassword(data: ResetPasswordRequest) {
+    return this.http.post(API_URLS.AUTH.RESET_PASSWORD, data ,{ withCredentials: true });
   }
 
 }

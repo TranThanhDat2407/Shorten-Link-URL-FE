@@ -5,6 +5,7 @@ import {RoleGuard} from './core/guards/role.guard';
 import {MyLinkComponent} from './client/pages/my-link/my-link';
 import {LinkDetailsComponent} from './client/pages/link-details/link-details';
 import {AdminLinkComponent} from './admin/pages/links/links';
+import {ForgotPasswordOtpVerifyComponent} from './client/pages/forgot-password-otp-verify/forgot-password-otp-verify';
 
 export const routes: Routes = [
   // CLIENT ROUTES - đường dẫn bình thường /
@@ -30,6 +31,21 @@ export const routes: Routes = [
 
       { path: 'register', loadComponent: () => import('./client/pages/register/register')
           .then(c => c.RegisterComponent) },
+
+      { path: 'forgot-password', loadComponent: () =>
+          import('./client/pages/forgot-password/forgot-password')
+            .then(c => c.ForgotPasswordComponent)
+      },
+
+      { path: 'forgot-password/verify-otp', loadComponent: () =>
+          import('./client/pages/forgot-password-otp-verify/forgot-password-otp-verify')
+            .then(c => c.ForgotPasswordOtpVerifyComponent)
+      },
+
+      { path: 'forgot-password/reset', loadComponent: () =>
+          import('./client/pages/reset-password/reset-password')
+            .then(c => c.ResetPasswordComponent)
+      },
 
       { path: 'user/dashboard', loadComponent: () => import('./client/pages/dashboard/dashboard')
           .then(c => c.UserDashboardComponent),
