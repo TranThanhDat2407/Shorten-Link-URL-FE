@@ -1,0 +1,181 @@
+<div class="container py-4">
+
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <div class="lc-block text-center text-md-start mb-3">
+        <div editable="rich">
+          <h1 class="display-5 fw-bold">Users Management</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-11 mb-6 mb-md-5">
+    <form [formGroup]="filterForm" (ngSubmit)="onFilter()">
+
+      <div class="row g-3">
+
+        <!-- Email -->
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Email</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search Email"
+            formControlName="email"
+          />
+        </div>
+
+        <!-- Full Name -->
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Full Name</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search Full Name"
+            formControlName="fullName"
+          />
+        </div>
+
+        <!-- Status -->
+        <div class="col-md-2">
+          <label class="form-label fw-semibold">Status</label>
+          <select
+            class="form-select"
+            formControlName="isActive"
+          >
+            <option value="">Status (All)</option>
+            <option value="true">Active</option>
+            <option value="false">Banned</option>
+          </select>
+        </div>
+
+        <!-- Provider -->
+        <div class="col-md-2">
+          <label class="form-label fw-semibold">Provider</label>
+          <select
+            class="form-select"
+            formControlName="provider"
+          >
+            <option value="">Provider (All)</option>
+            <option value="LOCAL">Local</option>
+            <option value="GOOGLE">Google</option>
+            <option value="FACEBOOK">Facebook</option>
+          </select>
+        </div>
+
+        <!-- Total Links -->
+<!--        <div class="col-md-2">-->
+<!--          <input-->
+<!--            type="number"-->
+<!--            class="form-control"-->
+<!--            placeholder="Min Links"-->
+<!--            formControlName="totalLink"-->
+<!--          />-->
+<!--        </div>-->
+
+        <div class="col-md-2 d-flex align-items-end gap-2">
+          <button type="button" class="btn btn-outline-secondary w-100" (click)="resetFilters()">
+            Clear
+          </button>
+          <button type="submit" class="btn btn-primary w-100">
+            Apply
+          </button>
+        </div>
+
+
+      </div>
+
+      <!-- Buttons -->
+
+
+    </form>
+
+  </div>
+
+  <div *ngIf="isLoading" class="text-center py-4">
+    <div class="spinner-border"></div>
+  </div>
+
+  <table class="table table-striped" *ngIf="!isLoading">
+    <thead class="table-secondary">
+    <tr>
+      <th>ID</th>
+      <th>Avatar</th>
+      <th>Email</th>
+      <th>Full Name</th>
+      <th>Provider</th>
+      <th>Role</th>
+      <th>Status</th>
+      <th>Total Links</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr *ngFor="let u of users">
+      <td>{{ u.id }}</td>
+
+      <td>
+        <img ngSrc="{{ u.pictureUrl || 'https://via.placeholder.com/40' }}"
+             width="40" height="40"
+             class="rounded-circle"
+             style="object-fit:cover;">
+      </td>
+
+      <td>{{ u.email }}</td>
+      <td>{{ u.fullName }}</td>
+      <td>{{ u.provider }}</td>
+      <td><span class="badge bg-primary">{{ u.role }}</span></td>
+
+      <td>
+        <span class="badge" [ngClass]="u.isActive ? 'bg-success' : 'bg-danger'">
+          {{ u.isActive ? 'Active' : 'Banned' }}
+        </span>
+      </td>
+
+      <td>{{ u.totalLink }}</td>
+
+      <td>
+        <button class="btn btn-sm btn-warning me-1">
+          Edit
+        </button>
+        <button class="btn btn-sm btn-danger" >
+          Delete
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <nav *ngIf="totalPages > 0" aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+
+      <!-- Previous -->
+      <li class="page-item" [class.disabled]="page === 0">
+        <button class="page-link" [disabled]="page === 0" (click)="goToPage(page - 1)">
+          Previous
+        </button>
+      </li>
+
+      <li *ngFor="let i of pageNumbers"
+          class="page-item"
+          [class.active]="i === page">
+        <button class="page-link" (click)="goToPage(i)">
+          {{ i + 1 }}
+        </button>
+      </li>
+
+      <!-- Next -->
+      <li class="page-item" [class.disabled]="page === totalPages - 1">
+        <button class="page-link" [disabled]="page === totalPages - 1" (click)="goToPage(page + 1)">
+          Next
+        </button>
+
+      </li>
+
+    </ul>
+  </nav>
+
+</div>

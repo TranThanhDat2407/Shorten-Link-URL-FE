@@ -40,5 +40,6 @@ export const API_URLS = {
     TOPLINKS: `${environment.apiUrl}${API_VERSION}/admin/analytics/top-links`,
     LINKDETAILS: (shortCode: String) =>
       `${environment.apiUrl}${API_VERSION}/admin/analytics/link/${shortCode}`,
+    GET_USERS: `${environment.apiUrl}${API_VERSION}/users`,
   }
 } as const;
