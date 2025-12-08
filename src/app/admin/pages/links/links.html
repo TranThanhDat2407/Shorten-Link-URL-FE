@@ -163,7 +163,7 @@
               <div class="d-flex align-items-center flex-grow-1">
                 <span class="fw-semibold text-muted me-2">Original URL:</span>
                 <a [href]="link.originalUrl" target="_blank" class="text-muted text-decoration-none text-truncate flex-grow-1">
-                  {{ link.originalUrl }}
+                  {{ link.originalUrl | slice:0:50 }}...
                 </a>
               </div>
               <button class="btn btn-sm btn-outline-secondary ms-2" (click)="copyToClipboard(link.originalUrl)">
