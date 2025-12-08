@@ -29,7 +29,7 @@ export class MyLinkComponent implements OnInit {
   private fb = inject(FormBuilder);
   private cdr = inject(ChangeDetectorRef);
   private zone = inject(NgZone);
-  domain = 'http://localhost:4200';
+  domain = environment.frontEndUrl;
 
   URL_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:(?:\w|-)+\.)+\w{2,}(?:\/[\w- ./?%&=]*)?$/i;
 

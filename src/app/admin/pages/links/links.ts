@@ -9,6 +9,7 @@ import {PageResponse} from '../../../common/models/response/page-response';
 import {UpdateLinkRequest} from '../../../common/models/request/update-link-request';
 import {RouterLink} from '@angular/router';
 import {AdminAnalyzeService} from '../../../core/services/admin-analyze';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-links',
@@ -30,7 +31,7 @@ export class AdminLinkComponent implements OnInit{
   private fb = inject(FormBuilder);
   private cdr = inject(ChangeDetectorRef);
   private zone = inject(NgZone);
-  domain = 'http://localhost:4200';
+  domain = environment.frontEndUrl;
 
   URL_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:(?:\w|-)+\.)+\w{2,}(?:\/[\w- ./?%&=]*)?$/i;
 
