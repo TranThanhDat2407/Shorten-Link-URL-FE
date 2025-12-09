@@ -163,6 +163,7 @@ export class MyLinkComponent implements OnInit {
 
   updateForm: FormGroup = this.fb.group({
     originalUrl: [''],
+    title: ['']
   });
 
   // Mở modal
