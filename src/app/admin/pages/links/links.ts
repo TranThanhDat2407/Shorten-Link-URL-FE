@@ -198,7 +198,8 @@ export class AdminLinkComponent implements OnInit{
     }
 
     const updatedUrl: string = this.updateForm.value.originalUrl;
-    const requestBody: UpdateLinkRequest = { originalUrl: updatedUrl };
+    const title: string = this.updateForm.value.title;
+    const requestBody: UpdateLinkRequest = { originalUrl: updatedUrl , title: title };
 
     this.linkService.updateLink(requestBody, this.selectedLink.id).subscribe({
       next: () => {

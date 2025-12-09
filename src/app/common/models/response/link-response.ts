@@ -1,5 +1,6 @@
 export interface LinkResponse {
   id: number;
+  title: string | null;
   originalUrl: string;
   shortCode: string;
   qrCodeUrl: string | null;
