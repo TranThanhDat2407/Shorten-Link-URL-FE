@@ -173,6 +173,7 @@ export class AdminLinkComponent implements OnInit{
 
   updateForm: FormGroup = this.fb.group({
     originalUrl: [''],
+    title: ['']
   });
 
   // Mở modal

@@ -163,7 +163,8 @@
               <div class="d-flex align-items-center flex-grow-1">
                 <span class="fw-semibold text-muted me-2">Original URL:</span>
                 <a [href]="link.originalUrl" target="_blank" class="text-muted text-decoration-none text-truncate flex-grow-1">
-                  {{ link.originalUrl | slice:0:50 }}...
+                  {{ link.title | slice:0:50 }}
+                  <span *ngIf="link.title && link.title.length > 50">...</span>
                 </a>
               </div>
               <button class="btn btn-sm btn-outline-secondary ms-2" (click)="copyToClipboard(link.originalUrl)">
@@ -290,6 +291,16 @@
                  class="text-danger mt-1">
               Original URL is required and must be a valid URL format.
             </div>
+
+            <label for="titleInput" class="form-label mt-2">Title:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="titleInput"
+              formControlName="title"
+              placeholder="Enter the title"
+            >
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="closeUpdateModal()">Cancel</button>
