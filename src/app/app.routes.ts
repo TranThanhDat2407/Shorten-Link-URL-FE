@@ -65,16 +65,18 @@ export const routes: Routes = [
       },
 
       {
-        path: ':code',
-        loadComponent: () => import('./client/pages/redirect/redirect')
-          .then(c => c.RedirectComponent)
-      },
-
-      {
         path: 'server-down',
         loadComponent: () => import('./client/pages/server-down/server-down')
           .then(c => c.ServerDownComponent)
+      },
+
+      {
+        path: ':code',
+        loadComponent: () => import('./client/pages/redirect/redirect')
+          .then(c => c.RedirectComponent)
       }
+
+
 
       // các trang client khác thêm ở đây
     ]
