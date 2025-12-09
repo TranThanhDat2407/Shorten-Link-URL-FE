@@ -12,6 +12,12 @@ export function authInterceptor(
 ): Observable<HttpEvent<any>> {
   const authService = inject(AuthService);
 
+  const excludedEndpoints = ['/actuator/health'];
+
+  if (excludedEndpoints.some(ep => req.url.includes(ep))) {
+    return next(req);
+  }
+
   // Thêm withCredentials cho mọi request
   const authReq = req.clone({ withCredentials: true });
 

@@ -41,5 +41,9 @@ export const API_URLS = {
     LINKDETAILS: (shortCode: String) =>
       `${environment.apiUrl}${API_VERSION}/admin/analytics/link/${shortCode}`,
     GET_USERS: `${environment.apiUrl}${API_VERSION}/users`,
+  },
+
+  HEALTH: {
+    CHECK: `${environment.apiUrl}/actuator/health`,
   }
 } as const;

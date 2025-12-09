@@ -69,6 +69,13 @@ export const routes: Routes = [
         loadComponent: () => import('./client/pages/redirect/redirect')
           .then(c => c.RedirectComponent)
       },
+
+      {
+        path: 'server-down',
+        loadComponent: () => import('./client/pages/server-down/server-down')
+          .then(c => c.ServerDownComponent)
+      }
+
       // các trang client khác thêm ở đây
     ]
   },
@@ -110,4 +117,5 @@ export const routes: Routes = [
   },
 
   { path: '**', redirectTo: '/not-found' }
+
 ];
