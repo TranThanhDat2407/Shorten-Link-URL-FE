@@ -65,7 +65,7 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h2 class="fw-bold h5 mb-0 text-truncate" style="max-width: 70%;">
                 {{ link.title | slice:0:50 }}
-                <span *ngIf="link.title?.length > 50">...</span>
+                <span *ngIf="link.title && link.title.length > 50">...</span>
               </h2>
 
               <div class="d-flex gap-2">
