@@ -15,7 +15,7 @@ export class HealthCheckService {
     );
   }
 
-  monitorHealth(intervalMs = 5000) {
+  monitorHealth(intervalMs = 300000) {
     return timer(0, intervalMs).pipe(
       switchMap(() => this.checkHealth())
     );
